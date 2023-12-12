@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Upload Form</title>
+    <title>Cat or Non-Cat</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css')}}">
 </head>
 <body>
 
-    <h2>Image Upload Form</h2>
+    <h1>Is this a cat picture?</h1>
 
     <form id="upload-form" enctype="multipart/form-data">
         <label for="file">Select an image:</label>
@@ -22,14 +22,11 @@
     </form>
     
     <div id="messages"></div>
-
-    <!-- <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> -->
+    
     <script>
-        const defaultImage = '{{ url_for("static", filename="default-image.jpg")}}';
-        document.getElementById("image-preview").src = defaultImage;
-
         const messagesContainer = document.getElementById('messages');
-        const uploadForm = document.getElementById('upload-form');        
+        const uploadForm = document.getElementById('upload-form'); 
+        const defaultImage = '{{ url_for("static", filename="default-image.jpg")}}';
 
         function uploadImage() {
             const formData = new FormData(uploadForm);
@@ -42,7 +39,7 @@
             .then(data => {
                 const { status, message } = data;
 
-                const messageElement = document.createElement('div');
+                const messageElement = document.createElement('h2');
                 messageElement.className = status === 'success' ? 'success' : 'error';
                 messageElement.textContent = message;
 
@@ -52,9 +49,8 @@
             .catch(error => {
                 console.error('Error during upload:', error);
             });
-        }
+        } 
 
-        
         function previewImage(event) {
             const input = event.target;
             const previewImage = document.getElementById('image-preview');
@@ -69,11 +65,12 @@
                 };
 
                 reader.readAsDataURL(file);
+                messagesContainer.innerHTML = '';
+                
             } else { 
-                previewImage.src = defaultImage;
+                previewImage.src = defaultImage;                
             }
         }
     </script>
-
 </body>
 </html>

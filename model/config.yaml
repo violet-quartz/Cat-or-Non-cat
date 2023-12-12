@@ -1,0 +1,6 @@
+image_height: 64
+image_width: 64
+model_rel_path: model.joblib
+model_type: sklearn.linear_model.LinearRegression
+test_dataset: datasets\test_catvnoncat.h5
+train_dataset: datasets\train_catvnoncat.h5
