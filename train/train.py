@@ -8,8 +8,8 @@ import os
 import yaml
 
 train_dir = os.path.dirname(__file__)
-train_dataset_rel_path = os.path.join('datasets', 'train_catvnoncat.h5')
-test_dataset_rel_path = os.path.join('datasets', 'test_catvnoncat.h5')
+train_dataset_rel_path = 'Path_To_Your_Train_Datasets'
+test_dataset_rel_path = 'Path_To_Your_Test_Datasets'
 
 def load_dataset():
     train_dataset = h5py.File(os.path.join(train_dir, train_dataset_rel_path), "r")
