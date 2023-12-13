@@ -6,10 +6,10 @@ import os
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Set a secret key for flashing messages
 
-# Set the upload folder
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg'}
 app.config['MODEL_FOLDER'] = 'model'
+model = CatPictureDetectModel(os.path.join(app.config['MODEL_FOLDER'], 'config.yaml'))
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
@@ -31,13 +31,17 @@ def upload_file():
     if file and allowed_file(file.filename):
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
         file.save(file_path)
-
-        model = CatPictureDetectModel(os.path.join(app.config['MODEL_FOLDER'], 'config.yaml'))
-        is_cat_image = model.predict(file_path)
-        message = "It's a cat picture." if is_cat_image else "It's not a cat picture."
+        
+        try:
+            is_cat_image = model.predict(file_path)
+            message = "It's a cat picture." if is_cat_image else "It's not a cat picture."
+            status = 'success'
+        except Exception as e:
+            message = str(e)
+            status = 'error'
 
         os.remove(file_path)
-        return jsonify({'status': 'success', 'message': message})
+        return jsonify({'status': status, 'message': message})
     else:
         return jsonify({'status': 'error', 'message': 'Invalid file type'})
 

@@ -1,9 +1,10 @@
 import os
-import joblib
+import h5py
 from PIL import Image
 import numpy as np
 import yaml
 import matplotlib.pyplot as plt
+from train.LogisticRegression import LogisticRegression
 
 class CatPictureDetectModel:
     def __init__(self, model_config):
@@ -11,7 +12,12 @@ class CatPictureDetectModel:
             config = yaml.load(f, Loader=yaml.FullLoader)
         self.image_height = config['image_height']
         self.image_width = config['image_width']
-        self.model = joblib.load(os.path.join(os.path.dirname(model_config), config['model_rel_path']))
+        # load model parameters
+        self.model = LogisticRegression()
+        model_path = os.path.join(os.path.dirname(model_config), config['model_rel_path'])
+        with h5py.File(model_path, 'r') as model_file:
+            self.w =model_file['weights'][()]
+            self.b = model_file['bias'][()]      
         
     def predict(self, img_path) -> bool:
         """
@@ -21,9 +27,9 @@ class CatPictureDetectModel:
         image = np.array(Image.open(img_path).resize((self.image_height, self.image_width)))
         print(image.shape)
         plt.imshow(image)
-        image = image.reshape((1, self.image_height * self.image_width * 3))
+        image = image.reshape((self.image_height * self.image_width * 3, 1))
         image = image / 255
         # Predict
-        label = self.model.predict(image)
-        return label[0] == 1 
+        label = self.model.predict(self.w, self.b, image)[0]
+        return label == 1 
         

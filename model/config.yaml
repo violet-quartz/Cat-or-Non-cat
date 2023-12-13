@@ -1,6 +1,8 @@
 image_height: 64
 image_width: 64
-model_rel_path: model.joblib
-model_type: sklearn.linear_model.LinearRegression
+learning_rate: 0.005
+model_rel_path: model.h5
+model_type: LogisticRegression
+num_iterations: 2000
 test_dataset: datasets\test_catvnoncat.h5
 train_dataset: datasets\train_catvnoncat.h5
